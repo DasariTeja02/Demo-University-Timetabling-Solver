@@ -26,39 +26,76 @@ cd University-Timetabling-Solver
 
 ### 2. Create and activate a virtual environment
 
+**macOS / Linux:**
 ```bash
 python3.11 -m venv .venv
 source .venv/bin/activate
 ```
 
-On Windows, use `.venv\Scripts\activate`.
+**Windows (PowerShell):**
+If script execution is disabled on your system (`PSSecurityException`), allow script execution for the current terminal session first:
+```powershell
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+.\.venv\Scripts\Activate.ps1
+```
+
+**Windows (Command Prompt / CMD):**
+```cmd
+.venv\Scripts\activate.bat
+```
+
+> [!TIP]
+> **Direct execution on Windows (No activation required):**
+> If you encounter `Python was not found` or wish to run commands without changing execution policies, prefix commands with the virtual environment's Python directly:
+> `.\.venv\Scripts\python.exe <command>` (e.g., `.\.venv\Scripts\python.exe -m src.run_solver ...`).
 
 ### 3. Install dependencies
 
 ```bash
 python -m pip install --upgrade pip
 pip install -r requirements.txt
+pip install pytest
 ```
+
+> [!NOTE]
+> On Windows 11 with Smart App Control enabled, ensure stable `pandas==2.2.3` is installed if you encounter code integrity policy errors.
 
 ### 4. Run the solver
 
+**With activated environment:**
 ```bash
 python -m src.run_solver instances/toy_hybrid.json full_solution.json
 ```
 
-The included toy instance completes quickly and exercises the CP-SAT, LNS, validation, and JSON-output pipeline. Larger ITC-2019 XML instances can require a longer time budget; see [Solver Configuration](#solver-configuration).
+**Directly via Windows PowerShell:**
+```powershell
+.\.venv\Scripts\python.exe -m src.run_solver instances/toy_hybrid.json full_solution.json
+```
+
+The included toy instance completes quickly and exercises the CP-SAT, LNS, validation, and JSON-output pipeline.
+
+To run on full ITC-2019 competition XML instances:
+```powershell
+python -m src.run_solver instances/itc2019/wbg-fal10.xml full_solution.json
+# or directly on Windows:
+.\.venv\Scripts\python.exe -m src.run_solver instances/itc2019/wbg-fal10.xml full_solution.json
+```
+Larger ITC-2019 XML instances can require a longer time budget; see [Solver Configuration](#solver-configuration).
 
 ### 5. Run the tests
 
 ```bash
-python -m pip install pytest
 python -m pytest
+# or directly on Windows:
+.\.venv\Scripts\python.exe -m pytest
 ```
 
 ### 6. View the dashboard
 
 ```bash
 python -m http.server 8000
+# or directly on Windows:
+.\.venv\Scripts\python.exe -m http.server 8000
 ```
 
 Open `http://localhost:8000/index.html`. The dashboard reads `full_solution.json` from the repository root.
